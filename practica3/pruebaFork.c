@@ -16,7 +16,7 @@ if (id==0){
              }
              else{
              printf("Soy el padre\n");
-             printf( "Mi PID es: %d\n", getpid());
+             printf("Mi PID es: %d\n", getpid());
              printf("Mi PID de mi padre es: %d\n", getppid());
              wait(&id);
             }
