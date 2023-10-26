@@ -1,0 +1,5 @@
+ls
+ls -l
+more prueba.c
+ls dir1
+ls -al dir1
