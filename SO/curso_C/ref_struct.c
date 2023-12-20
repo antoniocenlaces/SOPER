@@ -16,6 +16,6 @@ int main(){
     printf("Recuperado por a val= %d cadena[0]=%c\n",a->val,a->cadena[0]);
     a->val=1024;
     a->cadena[1]='r';
-    printf("NUEVO val= %d cadena[0]=%c\n",a->val,a->cadena[1]);
+    printf("NUEVO val= %d cadena[1]=%c\n",a->val,a->cadena[1]);
     return 0;
 }
