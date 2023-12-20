@@ -1,5 +1,5 @@
 /*ej701.c
-Ejemplo de teoría Sistemas Operativos
+Ejemplo de teorÃ­a Sistemas Operativos
 uso de fork() para crear un hijo*/
 
 #include <stdlib.h>
@@ -11,12 +11,12 @@ int main(int argc, char * argv[]) {
   int pidh, err;
   printf("Inicio prueba\n");
   pidh = fork();
-  if ( pidh == 0 ) { /* Código del hijo */
+  if ( pidh == 0 ) { /* Cï¿½digo del hijo */
     printf("\nSoy el hijo con pid: %d\n", getpid());
-    printf("\nDespués del fork me ha devuelto: %d\n", pidh);
+    printf("\nDespuï¿½s del fork me ha devuelto: %d\n", pidh);
     exit(0);
   }
-  /* Código del padre */
+  /* Cï¿½digo del padre */
   fprintf(stderr, "Padre: Antes de sleep\n");
   sleep(1);
   err = wait(NULL);
