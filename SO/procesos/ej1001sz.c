@@ -1,8 +1,9 @@
 /* ej1001.c
- * Shell elemental con bucle de lectura de comandos con par�metros.
+ * Shell elemental con bucle de lectura de comandos con parámetros.
  * Uso: [arre|soo] [comando][lista parametros]
- * arre:  ejecucion as�ncrona
- * soo:   ejecucion s�ncrona
+ * arre:  ejecucion asíncrona
+ * soo:   ejecucion síncrona
+ * Modificado para que un segundo hijo ejecute el execvp, mientras su padre queda haciendo wait
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,17 +51,25 @@ int main()
                 continue;
             }
         }
-
+            int pid2;
         switch(pid = fork()) {
             case -1:    /* error */
                 fprintf(stderr, "\nNo se puede crear proceso nuevo\n");
                 syserr("fork");
       
             case 0:    /* hijo */
-                if (!parate) sleep(3);
-                execvp(argt[1], &argt[1]);
-                fprintf(stderr,"\nNo se puede ejecutar %s\n", argt[1]);
-                syserr("execvp");
+                  switch (pid2 = fork()){
+                        case -1:    /* error */
+                              fprintf(stderr, "\nNo se puede crear proceso nuevo\n");
+                              syserr("fork");
+                        case 0:
+                              if (!parate) sleep(3);
+                              execvp(argt[1], &argt[1]);
+                              fprintf(stderr,"\nNo se puede ejecutar %s\n", argt[1]);
+                              syserr("execvp");
+                        default:
+                        if (wait(NULL)  == -1) syserr("wait");
+                  } /*switch interno*/
     
             default:    /* padre */
                 if (parate)
