@@ -57,6 +57,7 @@ int main()
                 syserr("fork");
       
             case 0:    /* hijo */
+                if (!parate) sleep(3);
                 execvp(argt[1], &argt[1]);
                 fprintf(stderr,"\nNo se puede ejecutar %s\n", argt[1]);
                 syserr("execvp");
