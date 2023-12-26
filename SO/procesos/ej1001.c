@@ -1,8 +1,8 @@
 /* ej1001.c
- * Shell elemental con bucle de lectura de comandos con parámetros.
+ * Shell elemental con bucle de lectura de comandos con parï¿½metros.
  * Uso: [arre|soo] [comando][lista parametros]
- * arre:  ejecucion asíncrona
- * soo:   ejecucion síncrona
+ * arre:  ejecucion asï¿½ncrona
+ * soo:   ejecucion sï¿½ncrona
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +32,7 @@ int main()
         argt[0] = strtok(s, " ");
 
         if (0 == strcmp(argt[0], "quit")) {
-            fprintf(stderr, "logout\n");
+            fprintf(stderr, "Me han pedido logout\n");
             exit(0);
         }
 
