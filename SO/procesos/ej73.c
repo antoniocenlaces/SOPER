@@ -34,6 +34,7 @@ int main() {
                   syserr("fork");
                   break;
             case 0:
+                  sleep(2);
                   execvp( argt[0], &argt[0]);
                   fprintf(stderr, "\nNo se puede ejecutar el exec()\n");
                   syserr("execvp");
