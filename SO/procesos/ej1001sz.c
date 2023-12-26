@@ -51,7 +51,7 @@ int main()
                 continue;
             }
         }
-            int pid2;
+        int pid2;
         switch(pid = fork()) {
             case -1:    /* error */
                 fprintf(stderr, "\nNo se puede crear proceso nuevo\n");
@@ -69,6 +69,7 @@ int main()
                               syserr("execvp");
                         default:
                         if (wait(NULL)  == -1) syserr("wait");
+                        exit(0);
                   } /*switch interno*/
     
             default:    /* padre */
