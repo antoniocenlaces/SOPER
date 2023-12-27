@@ -3,7 +3,8 @@
  * Uso: [arre|soo] [comando][lista parametros]
  * arre:  ejecucion asíncrona
  * soo:   ejecucion síncrona
- * Modificado para que un segundo hijo ejecute el execvp, mientras su padre queda haciendo wait
+ * Modificado para que un segundo hijo ejecute el execvp en caso de ejecución asíncrona
+ * para ejecución síncrona el primer hijo hace execvp
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,30 +52,31 @@ int main()
                 continue;
             }
         }
-        int pid2;
         switch(pid = fork()) {
             case -1:    /* error */
                 fprintf(stderr, "\nNo se puede crear proceso nuevo\n");
                 syserr("fork");
       
             case 0:    /* hijo */
-                  switch (pid2 = fork()){
+                if (!parate) { // Solo si es comportamiento asíncrono se va a crear un nieto
+                  switch (pid = fork()){ // Nieto creado
                         case -1:    /* error */
                               fprintf(stderr, "\nNo se puede crear proceso nuevo\n");
                               syserr("fork");
-                        case 0:
-                              if (!parate) sleep(3);
-                              execvp(argt[1], &argt[1]);
-                              fprintf(stderr,"\nNo se puede ejecutar %s\n", argt[1]);
-                              syserr("execvp");
+                        case 0: // El nieto se bloquea 3s para dar sensación de asíncrono
+                              sleep(3);
+                              break;
                         default:
-                        if (wait(NULL)  == -1) syserr("wait");
-                        exit(0);
+                        exit(0); // Hacemos que el primer hijo muera aquí. Solo queda el padre y el nieto.
                   } /*switch interno*/
-    
-            default:    /* padre */
-                if (parate)
-                    while (pid != wait(NULL));
+                } // if (!parate)
+                execvp(argt[1], &argt[1]); // Para síncrono lo ejecuta el hijo para asíncrono lo ejecuta el nieto
+                                           // Cuando este nieto acaba será adoptado por el init
+                fprintf(stderr,"\nNo se puede ejecutar %s\n", argt[1]);
+                syserr("execvp");
+            default:    /* padre, que ahora siempre hace wait, tanto para síncrono como asíncrono*/
+               i = wait(NULL);
+               if (i == -1) { syserr("wait");exit(1);}
         } /* switch */
     } /* while */
 } /* main */
