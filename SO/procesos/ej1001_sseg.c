@@ -17,7 +17,6 @@
 #define BUFSIZE 1024
 #define TRUE     1
 #define FALSE    0
-#define MAL (void (*)(int)) -1
 
 int pid, espera;
 void captura(int n);
@@ -28,9 +27,15 @@ int main()
     char *argt[BUFSIZE], *sp;	/* vector de BUFSIZE punteros */
     int i, parate;
     void (*ff)(int); // para programar captura
+    sigset_t miset;
+    struct sigaction miaccion;
 
-    ff = signal(SIGCHLD, captura);
-    if (ff == MAL) syserr("signal");
+    // Programción de la captura señal SIGCHLD
+    miaccion.sa_handler = captura;
+    sigemptyset(&miaccion.sa_mask);
+    miaccion.sa_flags = SA_RESTART;
+    i = sigaction(SIGCHLD, &miaccion, NULL);
+    if (i == -1) syserr("sigprocmask");
     while(1) {
         do { // para proteger la llamada a gets
             errno = 0; // Limpia errno para detectar si gets ha sido interrumpido
@@ -85,9 +90,6 @@ int main()
 
 void captura(int n){
     int i;
-    void (*ff)(int); // para programar captura
-    ff = signal(SIGCHLD, captura);
-    if (ff == MAL) syserr("signal");
     i = wait(NULL);
     if (i == pid) espera = 0; // Hijo síncrono ha acabado
 }
