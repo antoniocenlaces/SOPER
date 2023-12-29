@@ -41,12 +41,18 @@ int main(){
       for (i=0; i < N; i++){
             if ((pid[i] = fork()) == 0) { // Código para los hijos
                   myFather = getppid(); // pid de mi padre para poder enviarle la SIGUSR1
+                  fprintf(stderr, "Soy Hijo: %d e inicio en un pause\n", (i + 1));
                   pause(); // Doy tiempo a mi padre para crear todos los hijos. Mi padre 
                            // me sacará de aquí con una SIGUSR2
+                  fprintf(stderr, "Soy Hijo: %d padre me ha sacado del primer pause. Voy a entrar en bucle\n", (i + 1));
                   // Inicio bucle infinito para lanzar la SIGUSR1 a mi padre
+                  int j = 0;
                   while (1){
                         pause(); // Primero espero a que mi padre me diga cuando me toca enviar la SIGUSR1
-                        fprintf(stderr, "h%d", (i +1));
+                        fprintf(stderr, "Soy Hijo: %d dentro del bucle. Iteración: %d\n", (i + 1), j);
+                        fprintf(stderr, "h%d\n", (i +1));
+                        j++;
+                        fprintf(stderr, "Soy Hijo: %d y me duermo 1s\n", (i + 1));
                         sleep(1); // Doy tiempo a padre para llegar a su pause
                         kill(myFather, SIGUSR1);
                   } // while
@@ -55,13 +61,18 @@ int main(){
       // Padre tiene localizados a los hijos en pid[]
       // Todo el código que sigue solo lo ejecuta el padre
       // Primero se despierta a los hijos de forma controlada
+       fprintf(stderr, "\nSoy el padre con pid: %d. Hijo1 pid: %d. Hijo2 pid: %d. Y me duermo 4s\n", getpid(), pid[0] , pid[1]);
+      sleep(4); // Doy tiempo a que los hijos se creen y lleguen a su pause
       for (i=0; i < N; i++){
+             fprintf(stderr, "\nSoy el padre y envío SIGUSR2 a hijo %d\n", i+1);
             kill(pid[i], SIGUSR2);
       }
       // en este momento los hijos están en pause() esperando que el padre decida quien empieza el juego
       i = 0;
+      fprintf(stderr, "\nSoy el padre con pid: %d. Hijo1 pid: %d. Hijo2 pid: %d\n", getpid(), pid[0] , pid[1]);
       while (i < __INT_MAX__) {
-            fprintf(stderr, "p");
+            fprintf(stderr, "\nSoy el padre en iteración: %d.\n", i);
+            fprintf(stderr, "p\n");
             kill(pid[(i % N)], SIGUSR1);
             pause();
             i++;
@@ -72,13 +83,14 @@ void capturaUSR1(int n){
       void (*ff)(int);
       ff = signal(SIGUSR1, capturaUSR1);
       if (ff == MAL) syserr("signalUSR1");
-      fprintf(stderr, "-");
+      fprintf(stderr, "-\n");
 }
 
 void capturaUSR2(int n){
       void (*ff)(int);
       ff = signal(SIGUSR2, capturaUSR2);
       if (ff == MAL) syserr("signalUSR2");
+      fprintf(stderr, "\nAlguien ha enviado una SIGUSR2\n");
 }
 
 void capturaINT(int n){
