@@ -71,7 +71,7 @@ int main(){
       i = 0;
 // fprintf(stderr, "\nSoy el padre con pid: %d. Hijo1 pid: %d. Hijo2 pid: %d\n", getpid(), pid[0] , pid[1]);
       sleep(3); // Para asegurar que los hijos han llegado a la CPU y están en su pause
-      while (i < __INT_MAX__) {
+      while (i < 2147483647) {
 // fprintf(stderr, "\nSoy el padre en iteración: %d.\n", i);
             fprintf(stderr, "p");
             kill(pid[(i % N)], SIGUSR1);

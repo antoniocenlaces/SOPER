@@ -7,7 +7,7 @@
 void captura(int);
 
 int main(){
-	printf("Número señales implementadas: %d\n", _NSIG)
+	printf("Número señales implementadas: %d\n", NSIG);
 	int i;
 	sigset_t mimask,oldmask;
 	struct sigaction miaction;
