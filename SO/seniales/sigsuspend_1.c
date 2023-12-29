@@ -27,8 +27,8 @@ int main(){
 	alarm(3);
 	printf("Alarma programada\n");
 	// printf("\nSigsuspend ah devuelto: %d", i);
-	sigemptyset(&mimask);
-	if (sigsuspend(&mimask) != -1) syserr("sigsuspend");
+	// sigemptyset(&mimask);
+	if (sigsuspend(&oldmask) != -1) syserr("sigsuspend");
 /* fin region critica */	
 	
 	printf("Fin programa\n");
