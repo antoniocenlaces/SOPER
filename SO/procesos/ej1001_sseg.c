@@ -27,7 +27,6 @@ int main()
     char *argt[BUFSIZE], *sp;	/* vector de BUFSIZE punteros */
     int i, parate;
     void (*ff)(int); // para programar captura
-    sigset_t miset;
     struct sigaction miaccion;
 
     // Programción de la captura señal SIGCHLD
@@ -35,7 +34,7 @@ int main()
     sigemptyset(&miaccion.sa_mask);
     miaccion.sa_flags = SA_RESTART;
     i = sigaction(SIGCHLD, &miaccion, NULL);
-    if (i == -1) syserr("sigprocmask");
+    if (i == -1) syserr("sigaction");
     while(1) {
         do { // para proteger la llamada a gets
             errno = 0; // Limpia errno para detectar si gets ha sido interrumpido
@@ -82,7 +81,9 @@ int main()
             default:    /* padre */
                 if (parate) {
                     espera = 1; // La rutina de captura cuando llegue el proceso síncrono lo cambia a 0
-                    while (espera !=0) pause();
+                    while (espera !=0) pause(); // Padre al ser un hijo síncrono hace un pause. De este
+                                                // pause lo saca la señal SIGCHLD que la tiene capturada
+                                                // y al llegar se ejecuta la rutina de captura
                 }
         } /* switch */
     } /* while */
