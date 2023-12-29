@@ -1,5 +1,6 @@
-/* 143045_pr2a.c
- * Ejercicio voluntario 2a.
+/* 143045_pr2b.c
+ * Ejercicio voluntario 2b.
+ * Solución al ejercicio pelosig con señales seguras
  * Autor: Antonio José González Almela (NIP 143045)
  * Uso: 143045_pr2a
  */
@@ -21,22 +22,38 @@ void capturaUSR2(int n);
 void capturaINT(int n);
 
 int main(){
-      void (*ff)(int);
       int pid[N]; // Para el padre conocer el pid de cada uno de sus hijos
       int i, myFather; // Contador y variable para almacenar el pid del padre en cada hijo
 
+      sigset_t myMask,oldMask;
+	struct sigaction myAction;
+
+      // Programación de la captura de señales
       // Todo comportamiento ante señales programado en este proceso (padre) será heredado por sus hijos
-      // Captura de la señal SIGUSR1: vuelve a programar captura y escribe "-" por salida de error
-      ff = signal(SIGUSR1, capturaUSR1);
-      if (ff == MAL) syserr("signalUSR1");
+      // SIGUSR1
+      myAction.sa_handler = capturaUSR1;
+      sigemptyset(&myAction.sa_mask);
+      i = sigaction(SIGUSR1, &myAction, NULL);
+      if (i==-1) syserr("sigactionUSR1");
 
-      // Captura de la señal SIGUSR2: vuelve a programar captura, muestra mensaje. Usada para sincronizar el inicio de los hijos
-      ff = signal(SIGUSR2, capturaUSR2);
-      if (ff == MAL) syserr("signalUSR2");
+      // SIGUSR2
+      myAction.sa_handler = capturaUSR2;
+      i = sigaction(SIGUSR2, &myAction, NULL);
+      if (i==-1) syserr("sigactionUSR2");
 
-      // Captura de la señal SIGINT: escribe "He recibido SIGINT" por salida de error y acaba el proceso
-      ff = signal(SIGINT, capturaINT);
-      if (ff == MAL) syserr("signalINT");
+      // SIGINT
+      myAction.sa_handler = capturaINT;
+      i = sigaction(SIGINT, &myAction, NULL);
+      if (i==-1) syserr("sigactionINT");
+
+      sigemptyset(&myMask); // SET vacío
+      sigemptyset(&oldMask);
+      sigaddset(&myMask, SIGUSR1); // Añade SIGUSR1
+      sigaddset(&myMask, SIGUSR2); // Añade SIGUSR2
+      // sigaddset(&myMask, SIGINT); // Añade SIGINT
+
+      // Bloqueamos las tres señales añadidas al SET
+      sigprocmask(SIG_BLOCK, &myMask, &oldMask);
 
       // Bucle que lanza N procesos hijos, cada hijo se queda en pause al ser creado
       // El padre cuando los tiene todos creados los va despertando con la SIGUSR2 uno a uno
@@ -45,16 +62,16 @@ int main(){
       for (i=0; i < N; i++){
             if ((pid[i] = fork()) == 0) { // Código para los hijos
                   myFather = getppid(); // pid de mi padre para poder enviarle la SIGUSR1
-                  pause(); // Doy tiempo a mi padre para crear todos los hijos. Mi padre 
-                           // me sacará de aquí con una SIGUSR2
+                  // sigsuspend() va a restaurar el SET anterior (elimina los bloqueos de la línea 56)
+                  // y después entra en pause, de que sale con la SIGUSR2 enviada por el padre
+                  if (sigsuspend(&oldMask) != -1) syserr("sigsuspend");
+                  // Al salir del sigsuspend() el SET myMask es restaurado => vuelven a estar bloqueadas
+  
                   // Inicio bucle infinito para lanzar la SIGUSR1 a mi padre
                   while (1){
-                        pause(); // Primero espero a que mi padre me diga cuando me toca enviar la SIGUSR1
+                        // Primero espero a que mi padre me diga cuando me toca enviar la SIGUSR1
+                        if (sigsuspend(&oldMask) != -1) syserr("sigsuspend");
                         fprintf(stderr, "h%d", (i + 1));
-                        // Doy tiempo a padre para llegar a su pause
-                        // En máquinas muy rápidas es necesario introducir una pausa antes
-                        // del hijo enviar la señal al padre.
-                        // sleep(1);
                         kill(myFather, SIGUSR1);
                   } // while
             } // if fork()
@@ -63,25 +80,17 @@ int main(){
       // Padre tiene localizados a los hijos en pid[]
       // Todo el código que sigue solo lo ejecuta el padre
       
-      // Esto es una estimación del retardo necesario para garantizar que los procesos llegan al pause
-      // antes de ser señalados
-      int retardo;
-      if (N > 5) retardo = 5;
-              else retardo = N;
-      
-      // Primero se despierta a los hijos de forma controlada
-      sleep(retardo); // Doy tiempo a que los hijos se creen y lleguen a su pause
+      // Bucle para despertar a los hijos. Inmediatamente entran en un sigsuspend()
       for (i=0; i < N; i++){
             kill(pid[i], SIGUSR2);
       }
       
       // en este momento los hijos están en pause() esperando que el padre decida quien empieza el juego
       i = 0;
-      sleep(retardo); // Para asegurar que los hijos han llegado a la CPU y están en su pause
       while (i < 2147483647) {
             fprintf(stderr, "p");
             kill(pid[(i % N)], SIGUSR1);
-            pause();
+             if (sigsuspend(&oldMask) != -1) syserr("sigsuspend");
             i++;
       }
       // No será fácil que llegue a ejecutarse el código siguiente, pero si alguien tiene tanta paciencia
