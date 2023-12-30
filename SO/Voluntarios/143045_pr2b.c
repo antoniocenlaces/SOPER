@@ -2,7 +2,7 @@
  * Ejercicio voluntario 2b.
  * Solución al ejercicio pelosig con señales seguras
  * Autor: Antonio José González Almela (NIP 143045)
- * Uso: 143045_pr2a
+ * Uso: 143045_pr2b
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,7 +26,7 @@ int main(){
       int i, myFather; // Contador y variable para almacenar el pid del padre en cada hijo
 
       sigset_t myMask,oldMask;
-	    struct sigaction myAction1, myAction2, myAction3;
+	struct sigaction myAction1, myAction2, myAction3;
 
       // Programación de la captura de señales
       // Todo comportamiento ante señales programado en este proceso (padre) será heredado por sus hijos
