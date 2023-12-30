@@ -13,7 +13,7 @@ void f(int);
 int main(){
       int pid;
       signal(SIGUSR1, f);
-      if ((pid = fork() == 0)) { // Código del hijo
+      if ((pid = fork()) == 0) { // Código del hijo
             pid = getppid();
             while (1){
                   fprintf(stderr, "h");
