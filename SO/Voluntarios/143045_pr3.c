@@ -213,13 +213,12 @@ void creaNuevoJugador(int master){
 //          - mensaje[1]: pid del proceso (jugador) que envía el mensaje a informador
 //          - mensaje[2]: ppid del proceso que creó a este jugador / valor de la pelota
 void informador(int master){
-    int recibe, mensaje[3], jugadores[50], n=0;
+    int recibe, mensaje[3], n=0;
     while (1){
         recibe = read(master, mensaje, 12);
         if (recibe == 0) syserr("read");
         switch (mensaje[0]){
             case 0:
-                jugadores[n] = mensaje[1];
                 n++;
                 printf("Nuevo jugador: %d con pid=%d, creado por: %d\n",n , mensaje[1], mensaje[2]);
                 break;
@@ -230,7 +229,6 @@ void informador(int master){
                 printf("Jugador pid=%d, recibe pelota: %d\n", mensaje[1], mensaje[2]);
                 break;
             case 3:
-                jugadores[n] = mensaje[1];
                 n++;
                 printf("Jugador Padre: %d con pid=%d, creado por: %d\n",n , mensaje[1], mensaje[2]);
                 break;
