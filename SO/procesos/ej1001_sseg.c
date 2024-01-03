@@ -3,7 +3,7 @@
  * Uso: [arre|soo] [comando][lista parametros]
  * arre:  ejecucion asíncrona
  * soo:   ejecucion síncrona
- * Solución con Señales no seguras
+ * Solución con Señales Seguras
  */
 #include <stdio.h>
 #include <stdlib.h>

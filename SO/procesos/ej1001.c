@@ -1,8 +1,10 @@
 /* ej1001.c
- * Shell elemental con bucle de lectura de comandos con par�metros.
+ * Shell elemental con bucle de lectura de comandos con parámetros.
+ * Tras la ejecución asíncrona deja zombies, al menos que al final se haga
+ * una ejecución síncrona.
  * Uso: [arre|soo] [comando][lista parametros]
- * arre:  ejecucion as�ncrona
- * soo:   ejecucion s�ncrona
+ * arre:  ejecucion asíncrona
+ * soo:   ejecucion síncrona
  */
 #include <stdio.h>
 #include <stdlib.h>

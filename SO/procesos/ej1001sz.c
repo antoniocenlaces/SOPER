@@ -5,6 +5,7 @@
  * soo:   ejecucion síncrona
  * Modificado para que un segundo hijo ejecute el execvp en caso de ejecución asíncrona
  * para ejecución síncrona el primer hijo hace execvp
+ * Evita la creación de zombies de la ejecución asíncrona
  */
 #include <stdio.h>
 #include <stdlib.h>

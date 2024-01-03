@@ -19,10 +19,10 @@ int main(){
 	sigemptyset(&miaction.sa_mask);
 	i=sigaction(SIGALRM,&miaction,NULL);	/* capturar se�al SIGALRM */
 	if (i==-1) {syserr("sigaction");exit(1);}
-	printf("Se�al SIGALRM capturada\n");
+	printf("Señal SIGALRM capturada\n");
 
 	sigprocmask(SIG_BLOCK,&mimask,&oldmask);	/* bloqueo SIGALRM */
-	printf("Se�al SIGALRM bloqueada\n");
+	printf("Señal SIGALRM bloqueada\n");
 
 /* region critica */
 	alarm(3);

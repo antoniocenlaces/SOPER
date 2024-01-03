@@ -1,8 +1,8 @@
 /* ej1001.c
- * Shell elemental con bucle de lectura de comandos con par·metros.
+ * Shell elemental con bucle de lectura de comandos con par√°metros.
  * Uso: [arre|soo] [comando][lista parametros]
- * arre:  ejecucion asÌncrona
- * soo:   ejecucion sÌncrona
+ * arre:  ejecucion as√≠ncrona
+ * soo:   ejecucion s√≠ncrona
  */
 #include <stdio.h>
 #include <stdlib.h>
