@@ -15,7 +15,7 @@ int main(){
     myAction.sa_handler = captura;
     sigemptyset(&myAction.sa_mask);
     int i = sigaction(SIGUSR1, &myAction, NULL);
-    kill(-1, SIGUSR1);
+    kill(0, SIGUSR1);
 }
 
 void captura(int n){
