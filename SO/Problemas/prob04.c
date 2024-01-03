@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
+#include <sys/wait.h>
 #include "error.h"
 
 int main(int argc, char* argv[], char* envp[]){
@@ -63,10 +64,14 @@ int main(int argc, char* argv[], char* envp[]){
         printf("%s\n", cadena);
         strtok(cadena, " \t");
         proceso = atoi(cadena);
-        printf("Siguiente pid leido: %d\n", proceso);
+        // printf("Siguiente pid leido: %d\n", proceso);
         if (proceso != yo && proceso != pid && proceso != ppid){
-            kill(proceso, SIGKILL);
+            // kill(proceso, SIGKILL);
+            printf("Ahora me tocaría matar a proceso: %d\n", proceso);
         }
     }
-
+    int estado;
+    int acabado = wait(&estado);
+    if (acabado == pid) printf("Mi hijo ha terminado correctamente con estado: %d\n", estado);
+                  else  printf("Alguien ha terminado con pid: %d y estado: %d, pero no es mi hijo\n", acabado, estado);
 }
