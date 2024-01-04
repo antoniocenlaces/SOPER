@@ -25,10 +25,12 @@ int main(int argc, char * argv[]){
         printf("Uso: fcomados <file>\n");
         exit(0);
     }
+
     int f, i=0;
     char * arg1[N], * arg2[N];
     char * comandos[N];
     char linea[100];
+
     f = open(argv[1], O_RDONLY);
     if (f == -1) syserr("open");
 
@@ -44,25 +46,7 @@ int main(int argc, char * argv[]){
             i++;
         } // Al salir en comandos[i] hay un NULL que indica final
           // Desde 0 a i-1 comandos contiene la línea completa incluido separador |
-          i=0;
-          printf("Voy a mostrar el contenido de comandos en lista vertical.\n");
-        while (comandos[i] != NULL) {
-            printf("%s\n", comandos[i]);
-            i++;
-        }
         trocea(comandos, arg1, arg2);
-              i=0;
-          printf("Voy a mostrar el contenido de arg1 en lista vertical.\n");
-        while (arg1[i] != NULL) {
-            printf("%s\n", arg1[i]);
-            i++;
-        }
-             i=0;
-          printf("Voy a mostrar el contenido de arg2 en lista vertical.\n");
-        while (arg2[i] != NULL) {
-            printf("%s\n", arg2[i]);
-            i++;
-        }
         ejecuta(arg1, arg2);
         i=0;
     }
@@ -70,13 +54,7 @@ int main(int argc, char * argv[]){
 
 void trocea(char * comandos[], char * arg1[], char * arg2[]){
     int i = 0, j = 0, ejecutable = 1;
-        //  i=0;
-        //   printf("En trocea mostrar el contenido de comandos en lista vertical.\n");
-        // while (comandos[i] != NULL) {
-        //     printf("%s\n", comandos[i]);
-        //     i++;
-        // }
-        i=0;
+
     while (ejecutable) {
         if ((strcmp(comandos[i], "|")) != 0) { // No es un separador
             arg1[i] = comandos[i];
@@ -112,11 +90,6 @@ void ejecuta(char * arg1[], char * arg2[]) {
         close(fd[0]);
         close(fd[1]);
         // Hijo 1 va a ejecutar comando2 (segunda parte de la línea)
-        // sleep(1);
-        read(0, m, 33);
-        printf("%s", m);
-        fprintf(stderr,"Hijo1 debería ejecutar: %s\n", arg2[0]);
-        // pause();
         execvp(arg2[0], &arg2[0]);
         syserr("execvp2");
     default:
@@ -130,18 +103,11 @@ void ejecuta(char * arg1[], char * arg2[]) {
             dup(fd[1]);
             close(fd[1]);
             close(fd[0]);
-            // sleep(1);
-            write(1,"Mensaje inicial de Hijo2 a Hijo1\n",33);
-            fprintf(stderr, "Hijo2 debería ejecutar: %s\n", arg1[0]);
-        // pause();
             execvp(arg1[0], &arg1[0]);
             syserr("execvp1");
         default:
-        // sleep(2);
             close(fd[0]);
             close(fd[1]);
-            // kill(pid1, SIGUSR1);
-            //  kill(pid2, SIGUSR1);
             i = wait(estado);
             i = wait(estado);
         } // switch2
