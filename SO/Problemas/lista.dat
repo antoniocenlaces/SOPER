@@ -1,0 +1,5 @@
+ps -lu ubuntu | sort -n -r
+who | wc -l -c
+ls -lr | wc -l
+cat fcomandos.c | wc -l -c
+./prob04 | cat
