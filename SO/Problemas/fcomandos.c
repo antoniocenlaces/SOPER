@@ -127,9 +127,9 @@ fprintf(stderr,"Iniciado ejecuta para el comando: %s | %s\n",arg1[0], arg2[0]);
             close(fd[0]);
             close(fd[1]);
             i = wait(estado);
-            fprintf(stderr,"Mi hijo %d ha terminado correctamente con estado: %d\n",i, estado);
+            fprintf(stderr,"Mi hijo %d ha terminado correctamente con estado: %d\n",i, *estado);
             i = wait(estado);
-            fprintf(stderr,"Mi hijo %d ha terminado correctamente con estado: %d\n",i, estado);
+            fprintf(stderr,"Mi hijo %d ha terminado correctamente con estado: %d\n",i, *estado);
         } // switch2
     } // switch1
 } // ejecuta
