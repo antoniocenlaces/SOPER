@@ -1,0 +1,277 @@
+Problema 1
+Hemos escrito el siguiente programa en UNIX:
+Proceso padre:
+
+#include<stdio.h>
+
+main()
+{
+	int id,estado;
+
+	close(1);
+	creat("salida.dat",0777);
+	write(1,"linea de texto n 1\n",19);
+	if((id=fork())==0) { 
+		execl("hijo","hijo",0);
+		exit(1);
+	} 
+	else { 
+		while(wait(&estado)!=id);
+		write(1,"linea de texto n 5\n",19);  
+		exit(0);
+	} 
+}
+Proceso hijo:
+
+#include<stdio.h>
+#include<sys/file.h>
+
+main() { 
+	int idf;
+
+	write(1,"linea de texto n 2\n",19);
+	idf=open("salida.dat",O_WRONLY);
+	lseek(idf,0L,L_SET);/*L_SET coloca al principio*/
+	write(1,"linea de texto n 3\n",19);
+	write(idf,"linea de texto n 4\n",19);
+	close(idf);
+	close(1);
+	exit(0);
+ } 
+Se pide:
+	1. ÀEn que orden se haran las escrituras?
+	2. ÀCual sera el contenido del fichero "salida.dat" y por que?
+
+
+
+Problema 2
+Dados los siguientes programas escritos para correr en UNIX:
+Fichero primero.c:
+
+main(){
+	int id, fd[2];
+	
+	id = fork();
+	pipe(fd);
+	switch(id) {
+		case 0:
+			close(0);
+			dup(fd[0]);
+			close(fd[0]);
+			close(fd[1]);
+			execl("segundo","segundo",0);
+			exit(1);
+		case -1:
+			exit(1);
+		default:
+			close(1);
+			dup(fd[1]);
+			close(fd[0]);
+			close(fd[1]);
+			execl("segundo","segundo",0);
+			exit(1);
+	};
+	exit(0);
+}
+Fichero segundo.c:
+
+main(){
+	char c;
+	
+	while(read(0,&c,1)!=0)
+		write(1,&c,1);
+	exit(0);
+}
+
+Comenta y justifica cual es su comportamiento.
+
+
+
+Problema 3
+Dados los siguientes programas escritos para correr en UNIX:
+Fichero primero.c:
+#include <signal.h>
+int contador = 0;
+
+tratar_alarma(){
+	signal(SIGALRM, tratar_alarma);
+	write(1,"alarma \n",8);
+}
+
+main(){
+	int id, i, estado;
+	
+	signal(SIGALRM,tratar_alarma);
+	switch(id=fork()){
+		case 0:	execl("segundo","segundo",0);
+				exit(1);
+		case -1:	exit(2);
+	}
+	for(i=0;i<4;i++){
+		contador=contador+1;
+		alarm(3);
+		pause();
+	};
+	while(id!=wait(&estado));
+	printf("%d\n",contador);
+	exit(0);
+}
+Fichero segundo.c:
+#include <signal.h>
+
+int contador = 0;
+
+tratar_alarma(){
+	signal(SIGALRM, tratar_alarma);
+	write(1,"alarma \n",8);
+}
+
+main(){
+
+	int id, i, estado;
+	
+	for(i=0;i<4;i++){
+		contador=contador+1;
+		alarm(3);
+		pause();
+	};
+	printf("%d\n",contador);
+	exit(0);
+}
+Comenta y justifica cual es su comportamiento.
+Que valor imprimira el proceso "primero"?
+
+
+
+Problema 4
+La salida por pantalla del comando "ps -lu usuario" tiene la siguiente
+estructura:
+
+  F S  UID   PID  PPID  C PRI NI     ADDR  SZ   WCHAN TTY    TIME COMD
+  1 S  243  7152  7046  0 158 20 4004dec0  58 1d79e12 ttyqa  0:00 ksh
+  1 R  243  7788  5654 10 180 20 4007b200  16         ttyq6  0:00 ps
+
+Escribir un programa en lenguaje C que sea capaz de matar a todos los
+procesos del usuario vivos en el momento de su ejecucion. Para que
+funcione correctamente dejara vivos al propio proceso, a su hijo
+"ps -lu usuario" y a su padre "ksh".
+
+
+
+Problema 5 
+Escribir un programa en C para UNIX que cree tres procesos y una tuberia
+que los comunique, de manera que dos de ellos tengan la salida estandar
+asociada a la tuberia y el otro la entrada estandar. El programa recibe
+como argumentos los nombres de los ficheros que contienen el codigo que
+deben ejecutar los tres procesos
+
+
+
+
+Problema 6 
+Implementar el programa "mover" (similar al comando "mv" de UNIX). El
+programa recibe dos parametros, el primero de ellos corresponde a un
+fichero ya existente que desaparecera despues de la ejecucio— de "mover", 
+apareciendo un nuevo fichero con los mismos contenidos que el anterior
+y con nombre igual al segundo parametro. Para dicha implementacion solo
+se pueden usar llamadas al sistema UNIX. Es importante que la
+implementacion sea optima.
+Nota: No leere a partir de la decima linea.
+
+
+
+
+Problema 7
+Escribir una aplicacion (redi.c) en C para UNIX que redireccione la
+salida estandar y la salida de error de un programa hacia un fichero cuyo
+nombre se le pasara como primer argumento. El nombre del programa a ejecutar
+y sus parametros se le pasaran en el segundo argumento y sucesivos.
+
+		Ejemplo		redi salida ls -l pepe
+
+Debe redireccionar hacia el fichero "salida" (creandolo si no existe o
+truncandolo) las salidas estandar y de error del comando "ls -l pepe".
+
+Notas:
+	El comando a ejecutar puede producir salida est‡ndar y salida de 
+error mezcladas en el tiempo.
+	La ejecucion de "redi" solo producira un proceso.
+	El programa "redi.c" tiene como maximo diez lineas.
+
+
+
+Problema 8
+Explicar detalladamente (maximo un folio por una cara) como se comporta
+el siguiente programa:
+
+#include <signal.h>
+int pid;
+
+int trata_alarma(){
+	kill(pid,SIGKILL);
+}
+
+main(){
+	int status;
+
+	pid=fork();
+	if (pid!=0){
+		signal(SIGALARM,trata_alarma);
+		alarm(10);
+		wait(&status);
+		alarm(0);
+	}
+	else{
+		execl("otro","otro",0);
+		exit(1);
+	}
+}
+
+
+
+Problema 9
+Sea un sistema controlado por un computador con UNIX como Sistema
+Operativo. El sistema a controlar esta compuesto por un sensor y un
+actuador. El computador debe leer el sensor periodicamente y operar
+el actuador dependiendo del valor del sensor.
+El software para controlar este sistema consta de dos procesos llamados
+"sensor" y "actuador". 
+
+El proceso "sensor" crea primero el proceso "actuador" estableciendo una
+pipe entre los dos. Luego el proceso "sensor" llamara con una periodicidad 
+de 1 segundo a una funcion "leer_sensor()" que devolvera el valor del sensor
+en forma de entero. Una vez conseguido el valor, el proceso "sensor" lo
+enviara al proceso "actuador" a traves de la pipe.
+
+El proceso "actuador" crea inicialmente un fichero "datos.dat". Luego
+empieza a leer de la pipe los datos enviados por el proceso "sensor".
+Con cada dato leido debe, en primer lugar, llamar a la funcion
+"actua(dato)" pasandole como parametro el dato, escribiendo despues 
+dicho dato en el fichero "datos.dat". La rutina "actua(dato)" activara
+el actuador dependiendo del valor recibido.
+
+Se pide escribir en C el codigo de los procesos "sensor" y "actuador",
+suponiendo que las funciones "leer_sensor()" y "actua(dato)" ya estan
+escritas.
+
+
+
+Problema 10
+Escribe un programa en C que utilizando solo llamadas al sistema, nos
+de como resultado el numero de ficheros que hay en un directorio (cuyo
+nombre se le pasa como argumento) y el tamannoo en bytes que ocupan estos.
+Como ayuda recuerda que el comando ps -l ofrece el siguiente formato
+de salida:
+
+Protection links    UID       GID     size   date  time name
+-rw-r-----     1 teresa   arqcomp     3783 Nov  3 09:42 gauss.c
+drwxr-x---     3 teresa   arqcomp     1024 Jul 14 13:53 postgrado
+-rw-r-----     1 teresa   arqcomp     3783 Nov 23 11:35 gauss2.c
+-rw-r-----     1 teresa   arqcomp     3769 Nov  8 15:51 tpc.c
+drwxr-x---     3 teresa   arqcomp     1024 Dec  2 16:06 examenes
+drwxr-x---     2 teresa   arqcomp     1024 Nov 21 16:39 practicas
+
+Nota: No se contaran los ficheros directorio.
+
+
+
