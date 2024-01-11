@@ -3,7 +3,7 @@
 * Programa en C que recibe el nombre de un fichero como argumento
 * Ha de leer el fichero y ejecutar todos sus comandos
 * Formato del fichero: cmd1 arg11 arg12 arg13 ... | cmd2 arg21 arg22 arg23 ...
-* 
+* Ejercicio extra de los videos
 */
 
 #include <stdio.h>

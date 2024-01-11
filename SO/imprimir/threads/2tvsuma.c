@@ -1,3 +1,4 @@
+/*2tvsuma.c*/
 #include <pthread.h>
 #include "../sistemas/error.h"
 

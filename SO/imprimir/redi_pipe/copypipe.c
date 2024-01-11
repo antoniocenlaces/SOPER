@@ -1,5 +1,5 @@
 #include "error.h"
-
+/*copypipe.c*/
 main(argc,argv)
 int argc;
 char *argv[];

@@ -1,3 +1,6 @@
+
+/* lista.c
+*/
 #include <stdio.h>
 
 struct registro{

@@ -1,4 +1,4 @@
-/* reverse.c	Invierte el contenido de un fichero.*/
+/* reverse2arg.c	Invierte el contenido de un fichero.*/
 
 #include <stdio.h>
 #include	<sys/types.h>

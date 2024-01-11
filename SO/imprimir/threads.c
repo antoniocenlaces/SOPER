@@ -1,4 +1,5 @@
-/*  Ene 2012 Carlos J. Perez Jimenez
+/*  threads.c
+* Ene 2012 Carlos J. Perez Jimenez
  *  Ejemplo de uso de threads (ejemplo clase)
  *  sin parametros ni resultados
  *	acceso inteligente en exclusion mutua a suma

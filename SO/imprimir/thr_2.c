@@ -1,4 +1,5 @@
-/*  Ene 2013 Carlos J. Perez Jimenez
+/*  thr_2.c
+* Ene 2013 Carlos J. Perez Jimenez
  *  Ejemplo de uso de threads
  *  con parametros y resultados
  *  Programa de 2 threads para comparar tiempos
