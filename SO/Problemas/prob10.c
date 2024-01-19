@@ -18,8 +18,8 @@ int main(int argc, char * argv[]){
     }
 
     int fd[2], pid, longLinea, nf, i;
-    int tf;
-    char * campos[10];
+    long int tf;
+    char * campos[15];
     char linea[BUFSIZ];
 
     pipe(fd);
@@ -46,21 +46,25 @@ int main(int argc, char * argv[]){
     longLinea = leelinea(0, linea);
     if (longLinea <= 0) syserr("leelinea");
 
+    longLinea = leelinea(0, linea); // Primera línea con datos
     do {
         i=0;
-        longLinea = leelinea(0, linea);
         strtok(linea, " ");
         campos[i] = linea; // Primer campo de línea del ls -l
         i++;
-        if (strcmp(&campos[0][0], "-") != 0){ // Si primer caracter diferente de '-' descarto la línea
+        // printf("Primer caracter de la línea: '%c'. Ascii: %d Contenido de campos[0] '%s'\n", campos[0][0],campos[0][0], campos[0]);
+        // (int)campos[0][0] == 45
+        // (strcmp(&campos[0][0], "-")) == 0
+        if ((int)campos[0][0] == 45){ // Si primer caracter es '-' proceso la línea
             while((campos[i] = strtok(NULL, " ")) != NULL) i++;
             // campos[i] = NULL (indica que ya no hay más campos)
             nf++;
             tf = tf + atoi(campos[4]);
             printf("Fichero(%d): %s; Tamaño: %s Bytes\n", nf, campos[8], campos[4]);
         }
+        longLinea = leelinea(0, linea); // Lee siguiente línea
     } while (longLinea > 0);
-    printf("\nTotal de ficheros: %d. Ocupan: %d Bytes\n", nf, tf);
+    printf("\nTotal de ficheros: %d. Ocupan: %ld Bytes\n", nf, tf);
 }
 
 int leelinea(int fd, char linea[BUFSIZ]){
