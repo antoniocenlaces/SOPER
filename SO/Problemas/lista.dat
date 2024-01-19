@@ -1,5 +1,5 @@
 ls -lr | cat
-ps -lu a143045 | sort -n -r
+ps -lu ubuntu | sort -n -r
 ls -lr | wc -l
 cat fcomandos.c | wc -l -c
 ./prob04 | cat
