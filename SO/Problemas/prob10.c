@@ -17,7 +17,7 @@ int main(int argc, char * argv[]){
         exit(1);
     }
 
-    int fd[2], pid, longLinea, nf, i;
+    int fd[2], pid, longLinea, nf=0, i;
     long int tf;
     char * campos[15];
     char linea[BUFSIZ];
