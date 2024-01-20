@@ -55,7 +55,7 @@ int main(int argc, char * argv[]){
         // printf("Primer caracter de la línea: '%c'. Ascii: %d Contenido de campos[0] '%s'\n", campos[0][0],campos[0][0], campos[0]);
         // (int)campos[0][0] == 45
         // (strcmp(&campos[0][0], "-")) == 0
-        if ((int)campos[0][0] == 45){ // Si primer caracter es '-' proceso la línea
+        if (campos[0][0] == '-'){ // Si primer caracter es '-' proceso la línea
             while((campos[i] = strtok(NULL, " ")) != NULL) i++;
             // campos[i] = NULL (indica que ya no hay más campos)
             nf++;

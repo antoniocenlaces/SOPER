@@ -37,12 +37,16 @@ int main(int argc, char * argv[]){
     close(0); // FD 0 va a ser por donde se lee el fichero
     dup(f);
     close(f);
+    int ciclo = 0;
     while (gets(linea) != NULL){ // Lee del fichero mientras tenga líneas
+    printf("Inicia ciclo: %d\n",ciclo);
     printf("%s\n", linea);
         strtok(linea, " "); // linea contiene el primer comando de la línea
         comandos[i] = linea;
+    printf("Obtenido primer comando: %s\n", comandos[i]);
         i++;
         while ((comandos[i] = strtok(NULL, " ")) != NULL) {
+            printf("Otro comando(%d): %s\n", i,comandos[i]);
             i++;
         } // Al salir en comandos[i] hay un NULL que indica final
           // Desde 0 a i-1 comandos contiene la línea completa incluido separador |
