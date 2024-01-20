@@ -90,6 +90,7 @@ void trocea(char * comandos[], char * arg1[], char * arg2[]){
 
 void ejecuta(char * arg1[], char * arg2[]) {
     int * estado, pid1, pid2, fd[2], i;
+    estado=NULL;
 fprintf(stderr,"Iniciado ejecuta para el comando: %s | %s\n",arg1[0], arg2[0]);
     pipe(fd); // Tubería de comunicación de hijo1 (comando2) con hijo2 (comando1)
     char m[33];
@@ -128,6 +129,7 @@ fprintf(stderr,"Iniciado ejecuta para el comando: %s | %s\n",arg1[0], arg2[0]);
             syserr("execvp1");
         default:
         fprintf(stderr, "Padre ha creado dos hijos y va a cerrar pipe y esperar por hijos\n");
+        sleep(2);
             close(fd[0]);
             close(fd[1]);
             i = wait(estado);
