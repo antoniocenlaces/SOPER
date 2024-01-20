@@ -130,8 +130,8 @@ fprintf(stderr,"Iniciado ejecuta para el comando: %s | %s\n",arg1[0], arg2[0]);
         default:
         fprintf(stderr, "Padre ha creado dos hijos y va a cerrar pipe y esperar por hijos\n");
         sleep(2);
-            close(fd[0]);
-            close(fd[1]);
+            // close(fd[0]);
+            // close(fd[1]);
             i = wait(estado);
             fprintf(stderr,"Mi hijo %d ha terminado correctamente con estado: %d\n",i, *estado);
             i = wait(estado);
